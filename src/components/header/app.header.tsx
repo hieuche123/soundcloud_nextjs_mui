@@ -20,6 +20,7 @@ import Container from "@mui/material/Container";
 import Avatar from "@mui/material/Avatar";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useSession, signIn, signOut } from "next-auth/react";
 
 //styled-component
 const Search = styled("div")(({ theme }) => ({
@@ -64,6 +65,9 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 }));
 
 export default function AppHeader() {
+  const { data: session } = useSession();
+  console.log(">>> check session: ", session);
+
   const router = useRouter();
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] =
@@ -110,7 +114,7 @@ export default function AppHeader() {
     >
       <MenuItem>
         <Link
-          href={"/profile"}
+          href={`/profile/${session?.user?._id}`}
           style={{
             color: "unset",
             textDecoration: "unset",
@@ -119,7 +123,14 @@ export default function AppHeader() {
           Profile
         </Link>
       </MenuItem>
-      <MenuItem onClick={handleMenuClose}>Logout</MenuItem>
+      <MenuItem
+        onClick={() => {
+          handleMenuClose();
+          signOut();
+        }}
+      >
+        Logout
+      </MenuItem>
     </Menu>
   );
 
@@ -224,10 +235,18 @@ export default function AppHeader() {
                 },
               }}
             >
-              <Link href={"/playlist"}>Playlists</Link>
-              <Link href={"/like"}>Likes</Link>
-              <span>Upload</span>
-              <Avatar onClick={handleProfileMenuOpen}>ER</Avatar>
+              {session ? ( //fragment react
+                <>
+                  <Link href={"/playlist"}>Playlists</Link>
+                  <Link href={"/like"}>Likes</Link>
+                  <Link href={"/track/upload"}>Upload</Link>
+                  <Avatar onClick={handleProfileMenuOpen}>ER</Avatar>
+                </>
+              ) : (
+                <>
+                  <Link href={"/auth/signin"}>Login</Link>
+                </>
+              )}
             </Box>
             <Box sx={{ display: { xs: "flex", md: "none" } }}>
               <IconButton
