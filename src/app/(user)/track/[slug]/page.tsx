@@ -1,18 +1,20 @@
-"use client";
 import WaveTrack from "@/components/track/wave.track";
 import { useSearchParams } from "next/navigation";
 import Container from "@mui/material/Container";
+import { sendRequest } from "@/utils/api";
 
-const DetailTrackPage = (props: any) => {
+const DetailTrackPage = async (props: any) => {
   const { params } = props;
 
-  const searchParams = useSearchParams();
-  const search = searchParams.get("audio");
+  const res = await sendRequest<IBackendRes<ITrackTop>>({
+    url: `http://localhost:8000/api/v1/tracks/${params.slug}`,
+    method: "GET",
+  });
 
   return (
     <Container>
       <div>
-        <WaveTrack />
+        <WaveTrack track={res?.data ?? null} />
       </div>
     </Container>
   );
