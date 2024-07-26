@@ -16,6 +16,7 @@ import axios from "axios";
 import { useSession } from "next-auth/react";
 import { sendRequest } from "@/utils/api";
 import { useToast } from "@/utils/toast";
+import Image from "next/image";
 
 function LinearProgressWithLabel(
   props: LinearProgressProps & { value: number }
@@ -64,7 +65,7 @@ function InputFileUpload(props: any) {
     formData.append("fileUpload", image);
     try {
       const res = await axios.post(
-        "http://localhost:8000/api/v1/files/upload",
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/files/upload`,
         formData,
         {
           headers: {
@@ -157,7 +158,7 @@ const Step2 = (props: IProps) => {
 
   const handleSubmitForm = async () => {
     const res = await sendRequest<IBackendRes<ITrackTop[]>>({
-      url: "http://localhost:8000/api/v1/tracks",
+      url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/tracks`,
       method: "POST",
       body: {
         title: info.title,
@@ -203,10 +204,11 @@ const Step2 = (props: IProps) => {
           <div style={{ height: 250, width: 250, background: "#ccc" }}>
             <div>
               {info.imgUrl && (
-                <img
+                <Image
                   height={250}
                   width={250}
                   src={`${process.env.NEXT_PUBLIC_BACKEND_URL}/images/${info.imgUrl}`}
+                  alt="step 2 track url"
                 />
               )}
             </div>
