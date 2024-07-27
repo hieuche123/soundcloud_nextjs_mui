@@ -49,6 +49,15 @@ const CommentTrack = (props: IProps) => {
     });
     if (res.data) {
       setYourComment("");
+
+      await sendRequest<IBackendRes<any>>({
+        url: `/api/revalidate`,
+        method: "POST",
+        queryParams: {
+          tag: "track-comment",
+          secret: "justArandomString",
+        },
+      });
       router.refresh();
     }
   };

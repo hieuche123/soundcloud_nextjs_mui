@@ -1,7 +1,10 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-  output: "standalone",
+  experimental: {
+    serverMinification: false
+  },
+  // output: "standalone",
   swcMinify: true,
   modularizeImports: {
     '@mui/icons-material': {

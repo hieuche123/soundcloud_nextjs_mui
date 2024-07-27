@@ -23,6 +23,7 @@ import { useRouter } from "next/navigation";
 import { useSession, signIn, signOut } from "next-auth/react";
 import { fetchDefaultImages } from "@/utils/api";
 import Image from "next/image";
+import ActiveLink from "./active.link";
 
 //styled-component
 const Search = styled("div")(({ theme }) => ({
@@ -68,7 +69,6 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 
 export default function AppHeader() {
   const { data: session } = useSession();
-  console.log(">>> check session: ", session);
 
   const router = useRouter();
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -221,6 +221,12 @@ export default function AppHeader() {
               <StyledInputBase
                 placeholder="Search…"
                 inputProps={{ "aria-label": "search" }}
+                onKeyDown={(e: any) => {
+                  if (e.key === "Enter") {
+                    if (e?.target?.value)
+                      router.push(`/search?q=${e?.target?.value}`);
+                  }
+                }}
               />
             </Search>
             <Box sx={{ flexGrow: 1 }} />
@@ -234,14 +240,21 @@ export default function AppHeader() {
                 "> a": {
                   color: "unset",
                   textDecoration: "unset",
+                  padding: "5px",
+
+                  "&.active": {
+                    background: "#3b4a59",
+                    color: "#cefaff",
+                    borderRadius: "5px",
+                  },
                 },
               }}
             >
               {session ? ( //fragment react
                 <>
-                  <Link href={"/playlist"}>Playlists</Link>
-                  <Link href={"/like"}>Likes</Link>
-                  <Link href={"/track/upload"}>Upload</Link>
+                  <ActiveLink href={"/playlist"}>Playlists</ActiveLink>
+                  <ActiveLink href={"/like"}>Likes</ActiveLink>
+                  <ActiveLink href={"/track/upload"}>Upload</ActiveLink>
 
                   <Image
                     onClick={handleProfileMenuOpen}

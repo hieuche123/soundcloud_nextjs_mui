@@ -91,5 +91,16 @@ declare global {
         "updatedAt": string;
     }
 
+    interface IPlaylist {
+        "_id": string;
+        "title": string;
+        "isPublic": boolean;
+        "user": string;
+        "tracks": IShareTrack[],
+        "isDeleted": boolean;
+        "createdAt": string;
+        "updatedAt": string;
+    }
+
 }
 

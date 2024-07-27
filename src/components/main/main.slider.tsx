@@ -135,13 +135,32 @@ const MainSlider = (props: IProps) => {
               </div>
 
               <Link
+                style={{
+                  textDecoration: "none",
+                  color: "unset",
+                  fontSize: "14px",
+                }}
                 href={`/track/${convertSlugUrl(track.title)}-${
                   track._id
                 }.html?audio=${track.trackUrl}`}
               >
-                <h4>{track.title}</h4>
+                <div
+                  style={{
+                    margin: "12px 0 15px 0",
+                  }}
+                >
+                  {track.title}
+                </div>
               </Link>
-              <h5>{track.description}</h5>
+              <div
+                style={{
+                  marginBottom: "7px",
+                  color: "#ccc",
+                  fontSize: "13px",
+                }}
+              >
+                {track.description}
+              </div>
             </div>
           );
         })}

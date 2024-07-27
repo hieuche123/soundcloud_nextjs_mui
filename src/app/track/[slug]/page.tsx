@@ -37,6 +37,14 @@ export async function generateMetadata(
   };
 }
 
+export async function generateStaticParams() {
+  return [
+    { slug: "nu-hon-bisou-6507bf9cf423204f73c438cc.html" },
+    { slug: "le-luu-ly-6507bf9cf423204f73c438cf.html" },
+    { slug: "sau-con-mua-6507bf9cf423204f73c438d0.html" },
+  ];
+}
+
 const DetailTrackPage = async (props: any) => {
   const { params } = props; //regx
 
@@ -47,7 +55,10 @@ const DetailTrackPage = async (props: any) => {
   const res = await sendRequest<IBackendRes<ITrackTop>>({
     url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/tracks/${id}`,
     method: "GET",
-    nextOption: { cache: "no-store" },
+    nextOption: {
+      // cache: "no-store"
+      next: { tags: ["track-by-id"] },
+    },
   });
 
   const res1 = await sendRequest<IBackendRes<IModelPaginate<ITrackComment>>>({
@@ -59,8 +70,12 @@ const DetailTrackPage = async (props: any) => {
       trackId: id,
       sort: "-createdAt",
     },
+    nextOption: {
+      // cache: "no-store"
+      next: { tags: ["track-comment"] },
+    },
   });
-  await new Promise((resolve) => setTimeout(resolve, 3000));
+  // await new Promise(resolve => setTimeout(resolve, 5000))
 
   if (!res?.data) notFound();
 

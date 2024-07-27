@@ -1,3 +1,4 @@
+"use client";
 import Chip from "@mui/material/Chip";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
@@ -5,6 +6,7 @@ import { useEffect, useState } from "react";
 import { sendRequest } from "@/utils/api";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import { handleLikeTrackAction } from "@/utils/actions/actions";
 
 interface IProps {
   track: ITrackTop | null;
@@ -19,7 +21,7 @@ const LikeTrack = (props: IProps) => {
   const fetchData = async () => {
     if (session?.access_token) {
       const res2 = await sendRequest<IBackendRes<IModelPaginate<ITrackLike>>>({
-        url: `http://localhost:8000/api/v1/likes`,
+        url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/likes`,
         method: "GET",
         queryParams: {
           current: 1,
@@ -38,18 +40,9 @@ const LikeTrack = (props: IProps) => {
   }, [session]);
 
   const handleLikeTrack = async () => {
-    await sendRequest<IBackendRes<IModelPaginate<ITrackLike>>>({
-      url: `http://localhost:8000/api/v1/likes`,
-      method: "POST",
-      body: {
-        track: track?._id,
-        quantity: trackLikes?.some((t) => t._id === track?._id) ? -1 : 1,
-      },
-      headers: {
-        Authorization: `Bearer ${session?.access_token}`,
-      },
-    });
-
+    const id = track?._id;
+    const quantity = trackLikes?.some((t) => t._id === track?._id) ? -1 : 1;
+    await handleLikeTrackAction(id, quantity);
     fetchData();
     router.refresh();
   };
